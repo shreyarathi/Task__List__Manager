@@ -1,0 +1,41 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<h1 style="text-align:center; padding-top: 75px; color:deepskyblue;">Login</h1>
+<div class="container">
+    <form action="{% url 'login' %}" method="post" autocomplete="off">
+        {% csrf_token %}
+
+        <input type="text"
+               name="username"
+               placeholder="username"
+               id="usernameField"
+               pattern="[a-zA-Z0-9]+" required />
+        <br />
+
+
+        <input type="password"
+               name="password"
+               placeholder="Password"
+               class="form-control form-control-sm"
+               id="passwordField" />
+        <br />
+
+        <span>
+            <button type="submit" class="button">
+                Login
+            </button>
+        </span>
+
+
+    </form>
+        <a href="/todo/register/">
+            <input type="submit" value="Register" class="button" />
+        </a>
+        
+</div>
+
+{% endblock content %}

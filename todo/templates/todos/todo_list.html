@@ -1,0 +1,115 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block javascript %}
+<script>
+    function deleteFunction() {
+        
+        var t = $("input[name='todo']:checked").val();
+        
+        $.ajax({
+            type: "GET",
+            url: '/todo/delete_todo/'+t+'/',
+            dataType: 'json',
+
+            success: function (data) {
+                console.log('success');
+            },
+            error: function (data) {
+
+                console.log('error');
+            }
+        });    
+
+    }
+    function myFunction() {
+        var content = document.getElementsByName("content");
+        var username1 = $(content).val();
+        console.log(username1);
+
+        $.ajax({
+            type: "POST",
+            url: '/todo/insert_todo/',
+            data: {
+                'content': username1
+            },
+            dataType: 'json',
+
+            success: function (data) {
+                console.log(data);
+                
+                //$('ul_div').load(' ul_div');
+                console.log($(document.getElementsByName("ul_list")).html());
+                todo_data = data['todo_list'];
+                button = '<button type="submit" class="button" onclick={deleteFunction(key)}> Delete</button >';
+                html = '';
+                $.each(todo_data, function (i, item) {
+                    html += ("<li id="+ item['id'] + ">" + item['content'] + button + "</li>");
+                })
+                $(document.getElementsByName("ul_list")).html(html);
+                console.log($(document.getElementsByName("ul_list")).html());
+            },
+            error: function (data) {
+
+                console.log('error');
+            }
+        });    
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+
+<h1 style="text-align:center; padding-top: 75px; color:deepskyblue;">TODO</h1>
+
+<div class="topnav">
+    <div class="topnav-right">
+        <a href="message.html">About</a>
+        <a href="/todo/out/">Log out</a>
+    </div>
+</div>
+
+<div class="container">
+    <!--@()
+    @helper.CSRF.formField-->
+    <!--<form action="% url ' ' id%" method="post" autocomplete="off">-->
+    {% csrf_token %}
+    <input type="text" class="form-control" name="content" />
+    <span>
+        <button type="submit" class="button" id="id_addbtn" onclick={myFunction()}>
+            Add
+        </button>
+    </span>
+    <!--</form>-->
+</div>
+
+<form>
+    <button type="submit" class="button" onclick={deleteFunction()}>
+        Delete
+    </button>
+    <br />
+    {% for todo in todo_list %}
+    <input type="radio" name="todo" value={{todo.id}}> {{todo.content}}<br>
+
+    {% endfor %}
+</form>
+
+<!--<div name="ul_div">
+    <ul typeof="radio" style="text-align: center; font: 20px;" name="ul_list">
+        {% for todo in todo_list %}
+        <li id={{todo.id}}>
+                {{todo.content}}
+                {% csrf_token %}
+                <button type="submit" class="button" onclick={deleteFunction($(this).attr('key'))}>
+                    Delete
+                </button>
+        </li>
+        {% empty %}
+        <li>
+            <span>No todo item found.</span>
+        </li>
+        {% endfor %}
+    </ul>
+</div>-->
+
+{% endblock content %}
